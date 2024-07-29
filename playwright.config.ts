@@ -37,7 +37,6 @@ export default defineConfig({
             name: "chromium",
             use: {
                 ...devices["Desktop Chrome"],
-                baseURL: "https://airportgap.com/api",
             },
         },
 
@@ -45,7 +44,6 @@ export default defineConfig({
             name: "firefox",
             use: {
                 ...devices["Desktop Firefox"],
-                baseURL: "https://airportgap.com/api",
             },
         },
 
@@ -53,7 +51,6 @@ export default defineConfig({
             name: "webkit",
             use: {
                 ...devices["Desktop Safari"],
-                baseURL: "https://airportgap.com/api",
             },
         },
 
