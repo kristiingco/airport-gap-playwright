@@ -53,4 +53,26 @@ test.describe.parallel("Airports", () => {
         expect(responseBodyLinks.prev).toBeTruthy();
         expect(responseBodyLinks.self).toBeTruthy();
     });
+
+    test("GET Request - Get Airport by ID", async ({ request }) => {
+        const response = await request.get(`${BASE_URL}/airports/KIX`);
+        const responseBody = JSON.parse(await response.text());
+
+        expect(responseBody.data).toBeTruthy();
+
+        const responseDataItemAttributes = responseBody.data.attributes;
+        expect(responseDataItemAttributes).toBeTruthy();
+        expect(responseDataItemAttributes.altitude).toBeTruthy();
+        expect(responseDataItemAttributes.city).toBeTruthy();
+        expect(responseDataItemAttributes.country).toBeTruthy();
+        expect(responseDataItemAttributes.iata).toBeTruthy();
+        expect(responseDataItemAttributes.icao).toBeTruthy();
+        expect(responseDataItemAttributes.latitude).toBeTruthy();
+        expect(responseDataItemAttributes.longitude).toBeTruthy();
+        expect(responseDataItemAttributes.name).toBeTruthy();
+        expect(responseDataItemAttributes.timezone).toBeTruthy();
+
+        expect(responseBody.data.id).toBeTruthy();
+        expect(responseBody.data.type).toBeTruthy();
+    });
 });
