@@ -58,6 +58,8 @@ test.describe.parallel("Airports", () => {
         const response = await request.get(`${BASE_URL}/airports/KIX`);
         const responseBody = JSON.parse(await response.text());
 
+        expect(response.status()).toBe(200);
+
         expect(responseBody.data).toBeTruthy();
 
         const responseDataItemAttributes = responseBody.data.attributes;
@@ -72,7 +74,24 @@ test.describe.parallel("Airports", () => {
         expect(responseDataItemAttributes.name).toBeTruthy();
         expect(responseDataItemAttributes.timezone).toBeTruthy();
 
-        expect(responseBody.data.id).toBeTruthy();
+        expect(responseBody.data.id).toBe("KIX");
         expect(responseBody.data.type).toBeTruthy();
+    });
+
+    test("GET Request - No airport found", async ({ request }) => {
+        const response = await request.get(`${BASE_URL}/airports/NON_EXISTING`);
+        const responseBody = JSON.parse(await response.text());
+
+        expect(response.status()).toBe(404);
+
+        expect(responseBody.errors).toBeTruthy();
+
+        const responseBodyErrors = responseBody.errors[0];
+
+        expect(responseBodyErrors.status).toBe("404");
+        expect(responseBodyErrors.title).toBe("Not Found");
+        expect(responseBodyErrors.detail).toBe(
+            "The page you requested could not be found"
+        );
     });
 });
