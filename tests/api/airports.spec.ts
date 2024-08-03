@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test.describe.parallel("Airports", () => {
-    const BASE_URL = "https://airportgap.com/api";
+    const BASE_URL = "https://airportgap.com/api/airports";
 
     type ResponseDataItem = {
         attributes: {
@@ -20,7 +20,7 @@ test.describe.parallel("Airports", () => {
     };
 
     test("GET Request - Fetch airports", async ({ request }) => {
-        const response = await request.get(`${BASE_URL}/airports`);
+        const response = await request.get(`${BASE_URL}`);
         const responseBody = JSON.parse(await response.text());
 
         expect(response.status()).toBe(200);
@@ -55,7 +55,7 @@ test.describe.parallel("Airports", () => {
     });
 
     test("GET Request - Get Airport by ID", async ({ request }) => {
-        const response = await request.get(`${BASE_URL}/airports/KIX`);
+        const response = await request.get(`${BASE_URL}/KIX`);
         const responseBody = JSON.parse(await response.text());
 
         expect(response.status()).toBe(200);
@@ -75,11 +75,11 @@ test.describe.parallel("Airports", () => {
         expect(responseDataItemAttributes.timezone).toBeTruthy();
 
         expect(responseBody.data.id).toBe("KIX");
-        expect(responseBody.data.type).toBeTruthy();
+        expect(responseBody.data.type).toBe("airport");
     });
 
     test("GET Request - No airport found", async ({ request }) => {
-        const response = await request.get(`${BASE_URL}/airports/NON_EXISTING`);
+        const response = await request.get(`${BASE_URL}/NON_EXISTING`);
         const responseBody = JSON.parse(await response.text());
 
         expect(response.status()).toBe(404);
@@ -93,5 +93,32 @@ test.describe.parallel("Airports", () => {
         expect(responseBodyErrors.detail).toBe(
             "The page you requested could not be found"
         );
+    });
+
+    test("POST Request - Calculate distances between airports", async ({
+        request,
+    }) => {
+        const response = await request.post(`${BASE_URL}/distance`, {
+            data: {
+                from: "KIX",
+                to: "NRT",
+            },
+        });
+        const responseBody = JSON.parse(await response.text());
+
+        expect(response.status()).toBe(200);
+
+        expect(responseBody.data).toBeTruthy();
+
+        const responseDataItemAttributes = responseBody.data.attributes;
+
+        expect(responseDataItemAttributes.from_airport).toBeTruthy();
+        expect(responseDataItemAttributes.kilometers).toBeTruthy();
+        expect(responseDataItemAttributes.miles).toBeTruthy();
+        expect(responseDataItemAttributes.nautical_miles).toBeTruthy();
+        expect(responseDataItemAttributes.to_airport).toBeTruthy();
+
+        expect(responseBody.data.id).toBe("KIX-NRT");
+        expect(responseBody.data.type).toBe("airport_distance");
     });
 });
