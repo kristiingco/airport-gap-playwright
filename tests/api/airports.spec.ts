@@ -1,23 +1,8 @@
 import { test, expect } from "@playwright/test";
+import { ResponseDataItem } from "../../types";
 
 test.describe.parallel("Airports", () => {
     const BASE_URL = "https://airportgap.com/api/airports";
-
-    type ResponseDataItem = {
-        attributes: {
-            altitude: string;
-            city: string;
-            country: string;
-            iata: string;
-            icao: string;
-            latitude: string;
-            longitude: string;
-            name: string;
-            timezone: string;
-        };
-        id: string;
-        type: string;
-    };
 
     test("GET Request - Fetch airports", async ({ request }) => {
         const response = await request.get(`${BASE_URL}`);

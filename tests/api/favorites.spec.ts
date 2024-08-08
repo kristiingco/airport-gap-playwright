@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { ResponseDataItem } from "../../types";
 
 test.describe("Favorites", () => {
     const BASE_URL = "https://airportgap.com/api/favorites";
@@ -53,5 +54,36 @@ test.describe("Favorites", () => {
         expect(responseBodyErrors.detail).toBe(
             "Airport This airport is already in your favorites"
         );
+    });
+
+    test("GET Request - Get favorites", async ({ request }) => {
+        const response = await request.get(`${BASE_URL}`, {
+            headers: {
+                Authorization: `Bearer token=${token}`,
+            },
+        });
+        const responseBody = JSON.parse(await response.text());
+        console.log(responseBody);
+
+        expect(response.status()).toBe(200);
+
+        expect(responseBody.data).toBeTruthy();
+
+        responseBody.data.forEach((responseDataItem: ResponseDataItem) => {
+            expect(responseDataItem).toBeTruthy();
+            expect(responseDataItem.id).toBeTruthy();
+            expect(responseDataItem.type).toBe("favorite");
+
+            const responseDataItemAttributes = responseDataItem.attributes;
+            expect(responseDataItemAttributes).toBeTruthy();
+        });
+
+        const responseBodyLinks = responseBody.links;
+        expect(responseBodyLinks).toBeTruthy();
+        expect(responseBodyLinks.first).toBeTruthy();
+        expect(responseBodyLinks.last).toBeTruthy();
+        expect(responseBodyLinks.next).toBeTruthy();
+        expect(responseBodyLinks.prev).toBeTruthy();
+        expect(responseBodyLinks.self).toBeTruthy();
     });
 });
