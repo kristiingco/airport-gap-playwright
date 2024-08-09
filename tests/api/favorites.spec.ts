@@ -30,6 +30,35 @@ test.describe("Favorites", () => {
         expect(responseBody.data.type).toBe("favorite");
     });
 
+    test.skip("POST Request - Save an airport as favorite with note", async ({
+        request,
+    }) => {
+        const response = await request.post(`${BASE_URL}`, {
+            data: {
+                airport_id: "ATL",
+                note: "For visits to Georgia!",
+            },
+            headers: {
+                Authorization: `Bearer token=${token}`,
+            },
+        });
+        const responseBody = JSON.parse(await response.text());
+
+        expect(response.status()).toBe(201);
+
+        expect(responseBody.data).toBeTruthy();
+
+        const responseDataItemAirportAttributes =
+            responseBody.data.attributes.airport;
+        expect(responseDataItemAirportAttributes.iata).toBe("ATL");
+        expect(responseBody.data.attributes.note).toBe(
+            "For visits to Georgia!"
+        );
+
+        expect(responseBody.data.id).toBeTruthy();
+        expect(responseBody.data.type).toBe("favorite");
+    });
+
     test("POST Request - Airport already saved as favorite", async ({
         request,
     }) => {
@@ -63,7 +92,6 @@ test.describe("Favorites", () => {
             },
         });
         const responseBody = JSON.parse(await response.text());
-        console.log(responseBody);
 
         expect(response.status()).toBe(200);
 
@@ -85,5 +113,20 @@ test.describe("Favorites", () => {
         expect(responseBodyLinks.next).toBeTruthy();
         expect(responseBodyLinks.prev).toBeTruthy();
         expect(responseBodyLinks.self).toBeTruthy();
+    });
+
+    test("GET Request - Get favorite by ID", async ({ request }) => {
+        const response = await request.get(`${BASE_URL}/17251`, {
+            headers: {
+                Authorization: `Bearer token=${token}`,
+            },
+        });
+        const responseBody = JSON.parse(await response.text());
+
+        expect(response.status()).toBe(200);
+
+        expect(responseBody.data).toBeTruthy();
+        expect(responseBody.data.id).toBe("17251");
+        expect(responseBody.data.type).toBe("favorite");
     });
 });
