@@ -129,4 +129,27 @@ test.describe("Favorites", () => {
         expect(responseBody.data.id).toBe("17251");
         expect(responseBody.data.type).toBe("favorite");
     });
+
+    test("PATCH  Request - Update favorite airport by ID", async ({
+        request,
+    }) => {
+        const response = await request.patch(`${BASE_URL}/17272`, {
+            data: {
+                note: "Visiting family in Atlanta!",
+            },
+            headers: {
+                Authorization: `Bearer token=${token}`,
+            },
+        });
+        const responseBody = JSON.parse(await response.text());
+
+        expect(response.status()).toBe(200);
+
+        expect(responseBody.data).toBeTruthy();
+        expect(responseBody.data.id).toBe("17272");
+        expect(responseBody.data.type).toBe("favorite");
+        expect(responseBody.data.attributes.note).toBe(
+            "Visiting family in Atlanta!"
+        );
+    });
 });
