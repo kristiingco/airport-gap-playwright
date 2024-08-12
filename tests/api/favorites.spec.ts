@@ -130,7 +130,7 @@ test.describe("Favorites", () => {
         expect(responseBody.data.type).toBe("favorite");
     });
 
-    test("PATCH  Request - Update favorite airport by ID", async ({
+    test("PATCH Request - Update favorite airport by ID", async ({
         request,
     }) => {
         const response = await request.patch(`${BASE_URL}/17272`, {
@@ -151,5 +151,17 @@ test.describe("Favorites", () => {
         expect(responseBody.data.attributes.note).toBe(
             "Visiting family in Atlanta!"
         );
+    });
+
+    test.skip("DELETE Request - Delete favorite airport by ID", async ({
+        request,
+    }) => {
+        const response = await request.patch(`${BASE_URL}/17174`, {
+            headers: {
+                Authorization: `Bearer token=${token}`,
+            },
+        });
+
+        expect(response.status()).toBe(204);
     });
 });
